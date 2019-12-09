@@ -4,6 +4,8 @@ import pydot
 import random
 from collections import deque
 
+
+
 # Set it to bin folder of graphviz
 os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
@@ -61,6 +63,16 @@ class Solution():
 
         return self.dfs(*self.start_state, 0) if solve_method == "dfs" else self.bfs()
 
+    def draw(self, *, number_missionaries_left, number_cannnibals_left, number_missionaries_right, number_cannnibals_right):
+        left_m = emoji.emojize(f":old_man: " * number_missionaries_left)
+        left_c = emoji.emojize(f":ogre: " * number_cannnibals_left)
+        right_m = emoji.emojize(f":old_man: " * number_missionaries_right)
+        right_c = emoji.emojize(f":ogre: " * number_cannnibals_right)
+        
+        print('{}{}{}{}{}'.format(left_m ,left_c  + " " * (14 - len(left_m) - len(left_c)), "_" * 40, " " * (12 - len(right_m) - len(right_c)) + right_m, right_c))
+        print("")
+        # print (left_m ,  left_c, "__________________", right_m , right_c)
+
     def show_solution(self):
         # Recursively start from Goal State
         # And find parent until start state is reached
@@ -79,13 +91,31 @@ class Solution():
         steps = steps[::-1]
         nodes = nodes[::-1]
 
+        
+        number_missionaries_left, number_cannnibals_left = 3, 3
+        number_missionaries_right, number_cannnibals_right = 0, 0
         print("*" * 60)
+        self.draw(number_missionaries_left=number_missionaries_left, number_cannnibals_left=number_cannnibals_left, number_missionaries_right=number_missionaries_right, number_cannnibals_right=number_cannnibals_right)
+     
         for (number_missionaries, number_cannnibals, side), node in zip(steps[1:], nodes[1:]):
             node.set_style("filled")
             node.set_fillcolor("yellow")
+            # print(side)
+            # print(f". Move " , emoji.emojize(" :old_man: " * number_missionaries)  ,f"and " , emoji.emojize(" :ogre: " * number_cannnibals) , f" from {self.boat_side[side]} to {self.boat_side[int(not side)]}.")
+            print(f"Move {number_missionaries} missionaries  and {number_cannnibals} cannibals from {self.boat_side[side]} to {self.boat_side[int(not side)]}.")
+            if side == 1:
+                number_missionaries_left -= number_missionaries
+                number_missionaries_right += number_missionaries
 
-            print(emoji.emojize(f". Move {number_missionaries} :old_man:  and {number_cannnibals} :ogre:  from {self.boat_side[side]} to {self.boat_side[int(not side)]}."))
-        
+                number_cannnibals_left -= number_cannnibals
+                number_cannnibals_right += number_cannnibals
+            else:
+                number_missionaries_left += number_missionaries
+                number_missionaries_right -= number_missionaries
+                number_cannnibals_left += number_cannnibals
+                number_cannnibals_right -= number_cannnibals
+            self.draw(number_missionaries_left=number_missionaries_left, number_cannnibals_left=number_cannnibals_left, number_missionaries_right=number_missionaries_right, number_cannnibals_right=number_cannnibals_right)
+            
         print("Congratulations!!! you have solved the problem")
         print("*" * 60)
         
