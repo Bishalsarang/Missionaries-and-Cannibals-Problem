@@ -38,6 +38,8 @@ You can change the order of following line inside solve.py to get different solu
 ```
 self.options = [(0, 1), (0, 2), (1, 0), (1, 1), (2, 0),]
 ```
+### Issue:
+Windows cmd doesnt support emoji as of now. Try running on bash or terminal to see the graphics properly.
 
 ## Screenshots
 ### 1. BFS
