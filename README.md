@@ -40,3 +40,17 @@ self.options = [(0, 1), (0, 2), (1, 0), (1, 1), (2, 0),]
 ```
 
 ## Screenshots
+### 1. BFS
+![BFS](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/solutionbfs.JPG)
+---
+
+### 2. BFS Tree
+![BFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/bfs.png)
+---
+
+### 3. DFS
+![DFS](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/solution1.JPG)
+---
+
+### 4. DFS Tree
+![DFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/dfs.png)
