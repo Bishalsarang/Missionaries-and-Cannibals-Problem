@@ -4,8 +4,6 @@ import pydot
 import random
 from collections import deque
 
-
-
 # Set it to bin folder of graphviz
 os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
@@ -27,9 +25,9 @@ class Solution():
 
         self.boat_side = ["right", "left"]
 
-        self.graph = pydot.Dot(graph_type='graph')
-        # self.ga = Animation()
-        # self.last_state = None
+
+        self.graph = pydot.Dot(graph_type='graph', bgcolor="#fff3af", label="fig: Missionaries and Cannibal State Space Tree", fontcolor="red", fontsize="24")
+      
         self.visited = {}
         self.solved = False
 
@@ -48,20 +46,60 @@ class Solution():
     def number_of_cannibals_exceeds(self, number_missionaries, number_cannnibals):
         number_missionaries_right = 3 - number_missionaries
         number_cannnibals_right = 3 - number_cannnibals
-        return (number_missionaries > 0 and number_cannnibals > number_missionaries) or (number_missionaries_right > 0 and number_cannnibals_right > number_missionaries_right)
+        return (number_missionaries > 0 and number_cannnibals > number_missionaries) \
+               or (number_missionaries_right > 0 and number_cannnibals_right > number_missionaries_right)
 
     def write_image(self, file_name="state_space.png"):
+
+        try:
+            self.graph.write_png(file_name)
+        except Exception as e:
+            print("Error while writing file", e)
         print(f"File {file_name} successfully written.")
-        self.graph.write_png(file_name)
 
     def solve(self, solve_method="dfs"):
         self.visited = dict()
-        
         Parent[self.start_state] = None
         Move[self.start_state] = None
         node_list[self.start_state] = None
 
         return self.dfs(*self.start_state, 0) if solve_method == "dfs" else self.bfs()
+
+    def draw_legend(self):
+        graphlegend = pydot.Cluster(graph_name="legend", label="Legend", fontsize="20", color="gold",
+                                    fontcolor="blue", style="filled", fillcolor="#f4f4f4")
+
+
+        node1 = pydot.Node("1", style="filled", fillcolor="blue", label="Start Node", fontcolor="white", width="2", fixedsize="true")
+        graphlegend.add_node(node1)
+
+        node2 = pydot.Node("2", style="filled", fillcolor="red", label="Killed Node", fontcolor="black", width="2", fixedsize="true")
+        graphlegend.add_node(node2)
+
+        node3 = pydot.Node("3", style="filled", fillcolor="yellow", label="Solution nodes", width="2", fixedsize="true")
+        graphlegend.add_node(node3)
+        
+        node4 = pydot.Node("4", style="filled", fillcolor="gray", label="Can't be expanded",  width="2", fixedsize="true")
+        graphlegend.add_node(node4)
+
+        node5 = pydot.Node("5", style="filled", fillcolor="green", label="Goal State", width="2", fixedsize="true")
+        graphlegend.add_node(node5)
+
+
+        description = "Each node (m, c, s) represents a \nstate where 'm' is the number of\n missionaries, 'n' the cannibals and \n's' the side of the boat\n"\
+                " where  '1' represents the left \nside and '0' the right side \n\nOur objective is to reach goal state (0, 0, 0) \nfrom start state (3, 3, 1) by some \noperators = [(0, 1), (0, 2), (1, 0), (1, 1), (2, 0),]\n"\
+                "each tuples (x, y) inside operators \nrepresents the number of missionaries and \ncannibals to be moved from left to right \nif c == 1 and viceversa" 
+        
+        node6 = pydot.Node("6", style="filled", fillcolor="gold", label= description, shape="plaintext", fontsize="20", fontcolor="red")
+        graphlegend.add_node(node6)
+
+        self.graph.add_subgraph(graphlegend)
+
+        self.graph.add_edge(pydot.Edge(node1, node2, style="invis"))
+        self.graph.add_edge(pydot.Edge(node2, node3, style="invis"))
+        self.graph.add_edge(pydot.Edge(node3, node4, style="invis"))
+        self.graph.add_edge(pydot.Edge(node4, node5, style="invis"))
+        self.graph.add_edge(pydot.Edge(node5, node6, style="invis"))
 
     def draw(self, *, number_missionaries_left, number_cannnibals_left, number_missionaries_right, number_cannnibals_right):
         left_m = emoji.emojize(f":old_man: " * number_missionaries_left)
@@ -69,18 +107,16 @@ class Solution():
         right_m = emoji.emojize(f":old_man: " * number_missionaries_right)
         right_c = emoji.emojize(f":ogre: " * number_cannnibals_right)
         
-        print('{}{}{}{}{}'.format(left_m ,left_c  + " " * (14 - len(left_m) - len(left_c)), "_" * 40, " " * (12 - len(right_m) - len(right_c)) + right_m, right_c))
+        print('{}{}{}{}{}'.format(left_m, left_c + " " * (14 - len(left_m) - len(left_c)), "_" * 40, " " * (12 - len(right_m) - len(right_c)) + right_m, right_c))
         print("")
-        # print (left_m ,  left_c, "__________________", right_m , right_c)
 
     def show_solution(self):
         # Recursively start from Goal State
         # And find parent until start state is reached
 
         state = self.goal_state
-        path = []
-        steps = []
-        nodes = []
+        path, steps, nodes = [], [], []
+
         while state is not None:
             path.append(state)
             steps.append(Move[state])
@@ -88,21 +124,19 @@ class Solution():
         
             state = Parent[state]
         
-        steps = steps[::-1]
-        nodes = nodes[::-1]
+        steps, nodes = steps[::-1], nodes[::-1]
 
-        
         number_missionaries_left, number_cannnibals_left = 3, 3
         number_missionaries_right, number_cannnibals_right = 0, 0
+
         print("*" * 60)
         self.draw(number_missionaries_left=number_missionaries_left, number_cannnibals_left=number_cannnibals_left, number_missionaries_right=number_missionaries_right, number_cannnibals_right=number_cannnibals_right)
      
         for (number_missionaries, number_cannnibals, side), node in zip(steps[1:], nodes[1:]):
             node.set_style("filled")
             node.set_fillcolor("yellow")
-            # print(side)
-            # print(f". Move " , emoji.emojize(" :old_man: " * number_missionaries)  ,f"and " , emoji.emojize(" :ogre: " * number_cannnibals) , f" from {self.boat_side[side]} to {self.boat_side[int(not side)]}.")
             print(f"Move {number_missionaries} missionaries  and {number_cannnibals} cannibals from {self.boat_side[side]} to {self.boat_side[int(not side)]}.")
+
             if side == 1:
                 number_missionaries_left -= number_missionaries
                 number_missionaries_right += number_missionaries
@@ -112,20 +146,20 @@ class Solution():
             else:
                 number_missionaries_left += number_missionaries
                 number_missionaries_right -= number_missionaries
+
                 number_cannnibals_left += number_cannnibals
                 number_cannnibals_right -= number_cannnibals
+
             self.draw(number_missionaries_left=number_missionaries_left, number_cannnibals_left=number_cannnibals_left, number_missionaries_right=number_missionaries_right, number_cannnibals_right=number_cannnibals_right)
             
         print("Congratulations!!! you have solved the problem")
         print("*" * 60)
-        
 
     def bfs(self):
         q = deque()
         q.append(self.start_state + (0, ))
 
         self.visited[self.start_state] = True
-
 
         while q:
             number_missionaries, number_cannnibals, side, depth_level = q.popleft()
@@ -164,10 +198,8 @@ class Solution():
                         self.graph.add_node(v)                
                         
                         edge = pydot.Edge(str((number_missionaries, number_cannnibals, side, depth_level)), str((next_m, next_c, next_s, depth_level + 1) ), dir='forward')
-                        
                         self.graph.add_edge(edge)
-                        # self.graph.add_node(pydot.Node(str(next_m, next_c, next_s, depth_level + 1)), str((next_m, next_c, next_s)))
-                        # self.graph.add_edge(str((number_missionaries, number_cannnibals, side, depth_level)), str((next_m, next_c, next_s, depth_level + 1)))
+
                         # Keep track of parent and corresponding move
                         Parent[(next_m, next_c, next_s)] = (number_missionaries, number_cannnibals, side)
                         Move[(next_m, next_c, next_s)] = (x, y, side)
@@ -176,10 +208,6 @@ class Solution():
             if not can_be_expanded:
                 u.set_style("filled")
                 u.set_fillcolor("gray")
-
-          
-
-                
         return False
 
     def dfs(self, number_missionaries, number_cannnibals, side, depth_level):
