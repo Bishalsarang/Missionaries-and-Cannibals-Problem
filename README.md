@@ -77,9 +77,18 @@ Windows cmd doesnt support emoji as of now. Try running on bash or terminal to s
 ![BFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/bfs.png)
 ---
 
-### 3. DFS
+### 3. BFS Tree with legends
+![BFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/bfs_legend.png)
+---
+
+### 4. DFS
 ![DFS](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/solution1.JPG)
 ---
 
-### 4. DFS Tree
+### 5. DFS Tree
 ![DFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/dfs.png)
+---
+
+### 6. DFS Tree with Legends
+![BFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/dfs_legend.png)
+---
