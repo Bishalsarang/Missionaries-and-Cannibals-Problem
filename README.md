@@ -6,12 +6,12 @@ I'll be using BFS and DFS to find the solution space tree for Missionaries and C
 
 ## Requirements
 ```
-graphviz
 emoji==0.5.4
 pydot==1.4.1
 pyparsing==2.4.5
 ```
 
+Graphviz Binary
 Download graphviz https://www.graphviz.org/download/
 
 ### How to run
@@ -22,16 +22,43 @@ Download graphviz https://www.graphviz.org/download/
 # Set it to bin folder of graphviz
 os.environ["PATH"] += os.pathsep +  'C:/Program Files (x86)/Graphviz2.38/bin/'
 ``` 
- - For dfs run
+- Install all the requirements
+```
+pip install -r requirements.txt
+  ``` 
+ - For dfs without legends on graph run
 ```
 python main.py -m dfs
+ ```
+ or
+ ```
+python main.py --method dfs
   ``` 
-  
- - For bfs run
+- For dfs with legends on graph run
+```
+python main.py -m dfs -l True
+ ``` 
+ or
+ ```
+python main.py --method dfs --legend True
+ ```
+ - For bfs without legends on graph run
  ```
 python main.py -m bfs
   ``` 
- - The state space tree are saved as **bfs.png** and **dfs.png** in the current directory.
+   or
+ ```
+python main.py --method bfs
+  ``` 
+  - For bfs with legends on graph run
+```
+python main.py -m bfs -l True
+ ```
+  or
+ ```
+python main.py --method bfs --legend True
+ ```
+ - The state space tree are saved as **bfs.png** and **dfs.png** or **bfs_legend.png** and **dfs_legend.png**in the current directory.
 
 ### Note:
 You can change the order of following line inside solve.py to get different solution space tree. 
