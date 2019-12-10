@@ -21,7 +21,8 @@ class Solution():
         self.start_state = (3, 3, 1)
         self.goal_state = (0, 0, 0)
         self.options = [ (0, 1), (0, 2), (1, 0), (1, 1),  (2, 0), ]
-        # random.shuffle(self.options)
+        # self.options  = ((0,2),(1,1),(2,0),(1,0),(0,1))        
+        # self.options  = ((2,0),(1,1),(0,2),(1,0),(0,1)) 
 
         self.boat_side = ["right", "left"]
 
@@ -204,6 +205,16 @@ class Solution():
                         Parent[(next_m, next_c, next_s)] = (number_missionaries, number_cannnibals, side)
                         Move[(next_m, next_c, next_s)] = (x, y, side)
                         node_list[(next_m, next_c, next_s)] = v
+                    else:
+                        pass
+                        # # # If node is already visited make node as gray
+                        # # # But we don'n need to expand the node
+                        # # x = (next_m + number_missionaries, next_c + number_cannnibals, next_s + side, depth_level + 1 + depth_level) 
+                        # # v = pydot.Node(str(x), label=str((next_m, next_c, next_s)))
+                        # # self.graph.add_node(v)                
+                        # # v.set_fillcolor("gray")
+                        # # edge = pydot.Edge(str((number_missionaries, number_cannnibals, side, depth_level)), str(x), dir='forward')
+                        # # self.graph.add_edge(edge)
 
             if not can_be_expanded:
                 u.set_style("filled")
@@ -211,6 +222,7 @@ class Solution():
         return False
 
     def dfs(self, number_missionaries, number_cannnibals, side, depth_level):
+        self.visited[(number_missionaries, number_cannnibals, side)] = True
 
         u = pydot.Node(str((number_missionaries, number_cannnibals, side, depth_level)), label=str((number_missionaries, number_cannnibals, side)))
         self.graph.add_node(u)
@@ -220,8 +232,7 @@ class Solution():
             u.set_fillcolor("blue")
         elif self.is_goal_state(number_missionaries, number_cannnibals, side):
             u.set_style("filled")
-            u.set_fillcolor("green")
-            
+            u.set_fillcolor("green")    
             return True
 
         elif self.number_of_cannibals_exceeds(number_missionaries, number_cannnibals):
@@ -229,11 +240,8 @@ class Solution():
             u.set_fillcolor("red")
             return False
 
-        self.visited[(number_missionaries, number_cannnibals, side)] = True
-
         solution_found = False
         operation = -1 if side == 1 else 1
-
         
         can_be_expanded = False
 
@@ -259,6 +267,17 @@ class Solution():
                    
                     if(solution_found):
                         return True
+            else:
+                pass
+                # # If node is already visited make node as gray
+                # # But we don'n need to expand the node
+                # x = (next_m + number_missionaries, next_c + number_cannnibals, next_s + side, depth_level + 1 + depth_level) 
+                # v = pydot.Node(str(x), label=str((next_m, next_c, next_s)))
+                # self.graph.add_node(v)                
+                # v.set_style("filled")
+                # v.set_fillcolor("gray")
+                # edge = pydot.Edge(str((number_missionaries, number_cannnibals, side, depth_level)), str(x), dir='forward')
+                # self.graph.add_edge(edge)
      
         if not can_be_expanded:
             u.set_style("filled")
