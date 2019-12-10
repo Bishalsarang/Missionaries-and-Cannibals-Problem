@@ -19,12 +19,17 @@ def main():
         # Display SOlution on console
         s.show_solution()
 
+        output_file_name = f"{solve_method}"
         # Draw legend if legend_flag is set
         if legend_flag:
             if legend_flag[0].upper() == 'T' :
+                output_file_name += "_legend.png"
                 s.draw_legend()
+            else:
+                output_file_name += ".png"
+       
         # Write State space tree
-        s.write_image(f"{solve_method}.png")
+        s.write_image(output_file_name)
     else:
         raise Exception("No solution found")
 
