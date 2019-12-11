@@ -76,6 +76,7 @@ python main.py -m bfs -l True
  ```
 
  - The state space tree are saved as **bfs.png** and **dfs.png** or **bfs_legend.png** and **dfs_legend.png**  or state_space{depth}.png in the current directory.
+ The solution moves are displayed on console as in [solution](#bfs).
 
 ### Note:
 You can change the order of *self.options* following line inside solve.py  or *options* inside generate_full_space_tree.py  to get different state space tree. 
