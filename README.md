@@ -55,7 +55,7 @@ python main.py -m bfs -l True
 ### Note:
 You can change the order of *self.options* following line inside solve.py  or *options* inside generate_full_space_tree.py  to get different state space tree. 
 ```
-self.options = [(0, 1), (0, 2), (1, 0), (1, 1), (2, 0),]
+self.options =  [(1, 0), (0, 1), (1, 1), (0, 2), (2, 0)]
 ```
 ### Issue:
 Windows cmd doesnt support emoji as of now. Try running on bash or terminal to see the graphics properly.
