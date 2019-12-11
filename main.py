@@ -1,6 +1,7 @@
 from solve import Solution
 # from temp import Solution
 import argparse
+import itertools
 
 arg = argparse.ArgumentParser()
 arg.add_argument("-m", "--method", required=False, help="Specify which method to use")
@@ -10,6 +11,7 @@ args = vars(arg.parse_args())
 
 solve_method = args.get("method", "bfs")
 legend_flag = args.get("legend", False)
+
 
 def main():
     s = Solution()
@@ -27,6 +29,9 @@ def main():
                 s.draw_legend()
             else:
                 output_file_name += ".png"
+        else:
+             output_file_name += ".png"
+
        
         # Write State space tree
         s.write_image(output_file_name)

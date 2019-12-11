@@ -11,6 +11,7 @@ Parent = dict()
 Move = dict()
 node_list = dict()
 
+
 class Solution():
 
     def __init__(self):
@@ -20,9 +21,7 @@ class Solution():
 
         self.start_state = (3, 3, 1)
         self.goal_state = (0, 0, 0)
-        self.options = [ (0, 1), (0, 2), (1, 0), (1, 1),  (2, 0), ]
-        # self.options  = ((0,2),(1,1),(2,0),(1,0),(0,1))        
-        # self.options  = ((2,0),(1,1),(0,2),(1,0),(0,1)) 
+        self.options = [(1, 0), (0, 1), (1, 1), (0, 2), (2, 0)]
 
         self.boat_side = ["right", "left"]
 
@@ -83,8 +82,11 @@ class Solution():
         node4 = pydot.Node("4", style="filled", fillcolor="gray", label="Can't be expanded",  width="2", fixedsize="true")
         graphlegend.add_node(node4)
 
-        node5 = pydot.Node("5", style="filled", fillcolor="green", label="Goal State", width="2", fixedsize="true")
+        node5 = pydot.Node("5", style="filled", fillcolor="green", label="Goal node", width="2", fixedsize="true")
         graphlegend.add_node(node5)
+
+        node7 = pydot.Node("7", style="filled", fillcolor="gold", label="Node with child", width="2", fixedsize="true")
+        graphlegend.add_node(node7)
 
 
         description = "Each node (m, c, s) represents a \nstate where 'm' is the number of\n missionaries, 'n' the cannibals and \n's' the side of the boat\n"\
@@ -100,7 +102,8 @@ class Solution():
         self.graph.add_edge(pydot.Edge(node2, node3, style="invis"))
         self.graph.add_edge(pydot.Edge(node3, node4, style="invis"))
         self.graph.add_edge(pydot.Edge(node4, node5, style="invis"))
-        self.graph.add_edge(pydot.Edge(node5, node6, style="invis"))
+        self.graph.add_edge(pydot.Edge(node5, node7, style="invis"))
+        self.graph.add_edge(pydot.Edge(node7, node6, style="invis"))
 
     def draw(self, *, number_missionaries_left, number_cannnibals_left, number_missionaries_right, number_cannnibals_right):
         left_m = emoji.emojize(f":old_man: " * number_missionaries_left)
@@ -116,7 +119,7 @@ class Solution():
         # And find parent until start state is reached
 
         state = self.goal_state
-        path, steps, nodes = [], [], []
+        path, steps, nodes = [] ,[], []
 
         while state is not None:
             path.append(state)
@@ -129,58 +132,78 @@ class Solution():
 
         number_missionaries_left, number_cannnibals_left = 3, 3
         number_missionaries_right, number_cannnibals_right = 0, 0
-
+    
         print("*" * 60)
         self.draw(number_missionaries_left=number_missionaries_left, number_cannnibals_left=number_cannnibals_left, number_missionaries_right=number_missionaries_right, number_cannnibals_right=number_cannnibals_right)
-     
-        for (number_missionaries, number_cannnibals, side), node in zip(steps[1:], nodes[1:]):
-            node.set_style("filled")
-            node.set_fillcolor("yellow")
-            print(f"Move {number_missionaries} missionaries  and {number_cannnibals} cannibals from {self.boat_side[side]} to {self.boat_side[int(not side)]}.")
-
-            if side == 1:
-                number_missionaries_left -= number_missionaries
-                number_missionaries_right += number_missionaries
-
-                number_cannnibals_left -= number_cannnibals
-                number_cannnibals_right += number_cannnibals
-            else:
-                number_missionaries_left += number_missionaries
-                number_missionaries_right -= number_missionaries
-
-                number_cannnibals_left += number_cannnibals
-                number_cannnibals_right -= number_cannnibals
-
-            self.draw(number_missionaries_left=number_missionaries_left, number_cannnibals_left=number_cannnibals_left, number_missionaries_right=number_missionaries_right, number_cannnibals_right=number_cannnibals_right)
+        
+        for i, ((number_missionaries, number_cannnibals, side), node) in enumerate(zip(steps[1:], nodes[1:])):
             
+            if node.get_label() != str(self.start_state):
+                node.set_style("filled")
+                node.set_fillcolor("yellow")
+        
+            print(f"Step {i + 1}: Move {number_missionaries} missionaries  and {number_cannnibals} cannibals from {self.boat_side[side]} to {self.boat_side[int(not side)]}.")
+
+            op = -1 if side == 1 else 1
+            
+            number_missionaries_left = number_missionaries_left + op * number_missionaries
+            number_cannnibals_left = number_cannnibals_left + op * number_cannnibals
+
+            number_missionaries_right = number_missionaries_right - op * number_missionaries
+            number_cannnibals_right = number_cannnibals_right - op * number_cannnibals
+            
+            self.draw(number_missionaries_left=number_missionaries_left, number_cannnibals_left=number_cannnibals_left, number_missionaries_right=number_missionaries_right, number_cannnibals_right=number_cannnibals_right)
+        
         print("Congratulations!!! you have solved the problem")
         print("*" * 60)
 
+    def draw_edge(self, number_missionaries, number_cannnibals, side, depth_level):
+        u, v = None, None
+        if Parent[(number_missionaries, number_cannnibals, side)] is not None:
+            u = pydot.Node(str(Parent[(number_missionaries, number_cannnibals, side)] + (depth_level - 1, )), label=str(Parent[((number_missionaries, number_cannnibals, side))]))
+            self.graph.add_node(u)
+
+            v = pydot.Node(str((number_missionaries, number_cannnibals, side, depth_level)), label=str((number_missionaries, number_cannnibals, side)))
+            self.graph.add_node(v)
+
+            edge = pydot.Edge(str(Parent[(number_missionaries, number_cannnibals, side)] + (depth_level - 1, )), str((number_missionaries, number_cannnibals, side, depth_level) ), dir='forward')
+            self.graph.add_edge(edge)
+        else:
+            # For start node
+            v = pydot.Node(str((number_missionaries, number_cannnibals, side, depth_level)), label=str((number_missionaries, number_cannnibals, side)))
+            self.graph.add_node(v)        
+        return u, v
+
     def bfs(self):
         q = deque()
+        i = 0
         q.append(self.start_state + (0, ))
-
         self.visited[self.start_state] = True
 
         while q:
             number_missionaries, number_cannnibals, side, depth_level = q.popleft()
+            # print(number_missionaries, number_cannnibals)
+            # Draw Edge from u -> v
+            # Where u = Parent[v]
+            # and v = (number_missionaries, number_cannnibals, side, depth_level)
+            u, v = self.draw_edge(number_missionaries, number_cannnibals, side, depth_level)    
 
-            u = pydot.Node(str((number_missionaries, number_cannnibals, side, depth_level)), label=str((number_missionaries, number_cannnibals, side)))
-            self.graph.add_node(u)
-
-            if self.is_start_state(number_missionaries, number_cannnibals, side):
-                u.set_style("filled")
-                u.set_fillcolor("blue")
-                u.set_fontcolor("white")
+            
+            if self.is_start_state(number_missionaries, number_cannnibals, side):   
+                v.set_style("filled")
+                v.set_fillcolor("blue")
+                v.set_fontcolor("white")
             elif self.is_goal_state(number_missionaries, number_cannnibals, side):
-                u.set_style("filled")
-                u.set_fillcolor("green")
+                v.set_style("filled")
+                v.set_fillcolor("green")
                 return True
-
             elif self.number_of_cannibals_exceeds(number_missionaries, number_cannnibals):
-                u.set_style("filled")
-                u.set_fillcolor("red")
+                v.set_style("filled")
+                v.set_fillcolor("red")
                 continue
+            else:
+                v.set_style("filled")
+                v.set_fillcolor("orange")
 
             op = -1 if side == 1 else 1
 
@@ -188,57 +211,44 @@ class Solution():
 
             for x, y in self.options:
                 next_m, next_c, next_s = number_missionaries + op * x, number_cannnibals + op * y, int(not side)
-                
                 if (next_m, next_c, next_s) not in self.visited:
                     if self.is_valid_move(next_m, next_c):
                         can_be_expanded = True
                         self.visited[(next_m, next_c, next_s)] = True
                         q.append((next_m, next_c, next_s, depth_level + 1))
                         
-                        v = pydot.Node(str((next_m, next_c, next_s, depth_level + 1)), label=str((next_m, next_c, next_s)))
-                        self.graph.add_node(v)                
-                        
-                        edge = pydot.Edge(str((number_missionaries, number_cannnibals, side, depth_level)), str((next_m, next_c, next_s, depth_level + 1) ), dir='forward')
-                        self.graph.add_edge(edge)
-
                         # Keep track of parent and corresponding move
                         Parent[(next_m, next_c, next_s)] = (number_missionaries, number_cannnibals, side)
                         Move[(next_m, next_c, next_s)] = (x, y, side)
                         node_list[(next_m, next_c, next_s)] = v
-                    else:
-                        pass
-                        # # # If node is already visited make node as gray
-                        # # # But we don'n need to expand the node
-                        # # x = (next_m + number_missionaries, next_c + number_cannnibals, next_s + side, depth_level + 1 + depth_level) 
-                        # # v = pydot.Node(str(x), label=str((next_m, next_c, next_s)))
-                        # # self.graph.add_node(v)                
-                        # # v.set_fillcolor("gray")
-                        # # edge = pydot.Edge(str((number_missionaries, number_cannnibals, side, depth_level)), str(x), dir='forward')
-                        # # self.graph.add_edge(edge)
-
+                
             if not can_be_expanded:
-                u.set_style("filled")
-                u.set_fillcolor("gray")
+                v.set_style("filled")
+                v.set_fillcolor("gray")
         return False
 
     def dfs(self, number_missionaries, number_cannnibals, side, depth_level):
         self.visited[(number_missionaries, number_cannnibals, side)] = True
 
-        u = pydot.Node(str((number_missionaries, number_cannnibals, side, depth_level)), label=str((number_missionaries, number_cannnibals, side)))
-        self.graph.add_node(u)
+        # Draw Edge from u -> v
+        # Where u = Parent[v]
+        u, v = self.draw_edge(number_missionaries, number_cannnibals, side, depth_level)    
 
+        
         if self.is_start_state(number_missionaries, number_cannnibals, side):
-            u.set_style("filled")
-            u.set_fillcolor("blue")
+            v.set_style("filled")
+            v.set_fillcolor("blue")
         elif self.is_goal_state(number_missionaries, number_cannnibals, side):
-            u.set_style("filled")
-            u.set_fillcolor("green")    
+            v.set_style("filled")
+            v.set_fillcolor("green")    
             return True
-
         elif self.number_of_cannibals_exceeds(number_missionaries, number_cannnibals):
-            u.set_style("filled")
-            u.set_fillcolor("red")
+            v.set_style("filled")
+            v.set_fillcolor("red")
             return False
+        else:
+            v.set_style("filled")
+            v.set_fillcolor("orange")
 
         solution_found = False
         operation = -1 if side == 1 else 1
@@ -251,37 +261,19 @@ class Solution():
             if (next_m, next_c, next_s) not in self.visited:
                 if self.is_valid_move(next_m, next_c):
                     can_be_expanded = True
-                    v = pydot.Node(str((next_m, next_c, next_s, depth_level + 1)), label=str((next_m, next_c, next_s)))
-                    self.graph.add_node(v)
-
-                    edge = pydot.Edge(str((number_missionaries, number_cannnibals, side, depth_level)), str((next_m, next_c, next_s, depth_level + 1) ), dir='forward')
-                        
-                    self.graph.add_edge(edge)
-                    
-                    solution_found = (solution_found or self.dfs(next_m, next_c, next_s, depth_level + 1))
-                    
                     # Keep track of Parent state and corresponding move
                     Parent[(next_m, next_c, next_s)] = (number_missionaries, number_cannnibals, side)
                     Move[(next_m, next_c, next_s)] = (x, y, side)
                     node_list[(next_m, next_c, next_s)] = v
-                   
-                    if(solution_found):
+
+                    solution_found = (solution_found or self.dfs(next_m, next_c, next_s, depth_level + 1))
+                
+                    if solution_found:
                         return True
-            else:
-                pass
-                # # If node is already visited make node as gray
-                # # But we don'n need to expand the node
-                # x = (next_m + number_missionaries, next_c + number_cannnibals, next_s + side, depth_level + 1 + depth_level) 
-                # v = pydot.Node(str(x), label=str((next_m, next_c, next_s)))
-                # self.graph.add_node(v)                
-                # v.set_style("filled")
-                # v.set_fillcolor("gray")
-                # edge = pydot.Edge(str((number_missionaries, number_cannnibals, side, depth_level)), str(x), dir='forward')
-                # self.graph.add_edge(edge)
-     
+
         if not can_be_expanded:
-            u.set_style("filled")
-            u.set_fillcolor("gray")
+            v.set_style("filled")
+            v.set_fillcolor("gray")
 
         self.solved = solution_found
         return solution_found
