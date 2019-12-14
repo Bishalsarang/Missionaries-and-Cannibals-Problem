@@ -1,3 +1,8 @@
+# Author: Bishal Sarang
+""" 
+    Program to genrate complete state space tree upto certain depth level
+"""
+
 from collections import deque
 import pydot
 import argparse
@@ -8,8 +13,10 @@ os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
 options = [(1, 0), (0, 1), (1, 1), (0, 2), (2, 0)]
 Parent = dict()
-graph = pydot.Dot(graph_type='graph',strict=True, bgcolor="#fff3af", label="fig: Missionaries and Cannibal State Space Tree", fontcolor="red", fontsize="24", overlap="true")
+graph = pydot.Dot(graph_type='graph',strict=False, bgcolor="#fff3af", label="fig: Missionaries and Cannibal State Space Tree", fontcolor="red", fontsize="24", overlap="true")
 
+# To track node
+i = 0
 
 arg = argparse.ArgumentParser()
 arg.add_argument("-d", "--depth", required=False, help="MAximum depth upto which you want to generate Space State Tree")
@@ -62,6 +69,7 @@ def number_of_cannibals_exceeds(number_missionaries, number_cannnibals):
             or (number_missionaries_right > 0 and number_cannnibals_right > number_missionaries_right)
 
 def generate():
+        global i
         q = deque()
         node_num = 0
         q.append((3, 3, 1, 0, node_num))
@@ -70,6 +78,7 @@ def generate():
         Parent[(3, 3, 1, 0, node_num)] = None
 
         while q:
+
             number_missionaries, number_cannnibals, side, depth_level, node_num = q.popleft()
             # print(number_missionaries, number_cannnibals)
             # Draw Edge from u -> v
@@ -102,16 +111,18 @@ def generate():
 
             can_be_expanded = False
 
-            i = node_num
+            # i = node_num
             for x, y in options:
                 next_m, next_c, next_s = number_missionaries + op * x, number_cannnibals + op * y, int(not side)
+                
+               
                 if Parent[(number_missionaries, number_cannnibals, side, depth_level, node_num)] is None or (next_m, next_c, next_s) != Parent[(number_missionaries, number_cannnibals, side, depth_level, node_num)][:3]:
                     if is_valid_move(next_m, next_c):
                         can_be_expanded = True
                         i += 1
                         q.append((next_m, next_c, next_s, depth_level + 1, i))
                         
-                        # Keep track of parent and corresponding move
+                        # Keep track of parent
                         Parent[(next_m, next_c, next_s, depth_level + 1, i)] = (number_missionaries, number_cannnibals, side, depth_level, node_num)
 
             if not can_be_expanded:

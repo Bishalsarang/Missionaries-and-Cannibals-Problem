@@ -1,5 +1,8 @@
+# Author: Bishal Sarang
+""" 
+    Driver Program to handle command line arguments and  create Solution object
+"""
 from solve import Solution
-# from temp import Solution
 import argparse
 import itertools
 
@@ -32,7 +35,6 @@ def main():
         else:
              output_file_name += ".png"
 
-       
         # Write State space tree
         s.write_image(output_file_name)
     else:

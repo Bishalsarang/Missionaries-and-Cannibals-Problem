@@ -1,3 +1,8 @@
+# Author: Bishal Sarang
+""" 
+    Main solver program that implements bfs, dfs and drawing utilities to draw graphs.
+"""
+
 import os
 import emoji
 import pydot
@@ -7,9 +12,11 @@ from collections import deque
 # Set it to bin folder of graphviz
 os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
-Parent = dict()
-Move = dict()
-node_list = dict()
+# Dictionaries to backtrack solution nodes
+# Parent stores parent of (m , c, s)
+# Move stores (x, y, side) i.e number of missionaries, cannibals to be moved from left to right or right to left for particular state
+# node_list stores pydot.Node object for particular state (m, c, s) so that we can color the solution nodes
+Parent, Move, node_list = dict(), dict(), dict()
 
 
 class Solution():
@@ -26,8 +33,7 @@ class Solution():
         self.boat_side = ["right", "left"]
 
 
-        self.graph = pydot.Dot(graph_type='graph', bgcolor="#fff3af", label="fig: Missionaries and Cannibal State Space Tree", fontcolor="red", fontsize="24")
-      
+        self.graph = pydot.Dot(graph_type='graph', bgcolor="#fff3af", label="fig: Missionaries and Cannibal State Space Tree", fontcolor="red", fontsize="24")      
         self.visited = {}
         self.solved = False
 
@@ -50,7 +56,6 @@ class Solution():
                or (number_missionaries_right > 0 and number_cannnibals_right > number_missionaries_right)
 
     def write_image(self, file_name="state_space.png"):
-
         try:
             self.graph.write_png(file_name)
         except Exception as e:
@@ -66,6 +71,9 @@ class Solution():
         return self.dfs(*self.start_state, 0) if solve_method == "dfs" else self.bfs()
 
     def draw_legend(self):
+        """
+            Utility method to draw legend on graph if  legend flag is ON 
+        """
         graphlegend = pydot.Cluster(graph_name="legend", label="Legend", fontsize="20", color="gold",
                                     fontcolor="blue", style="filled", fillcolor="#f4f4f4")
 
@@ -106,6 +114,9 @@ class Solution():
         self.graph.add_edge(pydot.Edge(node7, node6, style="invis"))
 
     def draw(self, *, number_missionaries_left, number_cannnibals_left, number_missionaries_right, number_cannnibals_right):
+        """
+            Draw state on console using emojis
+        """
         left_m = emoji.emojize(f":old_man: " * number_missionaries_left)
         left_c = emoji.emojize(f":ogre: " * number_cannnibals_left)
         right_m = emoji.emojize(f":old_man: " * number_missionaries_right)
@@ -176,13 +187,11 @@ class Solution():
 
     def bfs(self):
         q = deque()
-        i = 0
         q.append(self.start_state + (0, ))
         self.visited[self.start_state] = True
 
         while q:
             number_missionaries, number_cannnibals, side, depth_level = q.popleft()
-            # print(number_missionaries, number_cannnibals)
             # Draw Edge from u -> v
             # Where u = Parent[v]
             # and v = (number_missionaries, number_cannnibals, side, depth_level)
