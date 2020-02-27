@@ -89,38 +89,38 @@ Windows cmd doesnt support emoji as of now. Try running on bash or terminal to s
 ## Screenshots
 
 ### State Space Tree with Depth 8
-![State Space Tree_8](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/state_space_8.png)
+![State Space Tree_8](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/state_space_8.png)
 ---
 
 ### State Space Tree with Depth 20
-![BFS](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/state_space_20.png)
+![BFS](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/state_space_20.png)
 ---
 ### State Space Tree with Depth 40
-![BFS](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/state_space_40.png)
+![BFS](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/state_space_40.png)
 ---
 ### Legends
-![BFS](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/legend.JPG)
+![BFS](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/legend.JPG)
 ---
 ###  BFS
-![BFS](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/solution_bfs.JPG)
+![BFS](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/solution_bfs.JPG)
 ---
 
 ### BFS Tree
-![BFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/bfs.png)
+![BFS Tree](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/bfs.png)
 ---
 
 ### BFS Tree with legends
-![BFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/bfs_legend.png)
+![BFS Tree](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/bfs_legend.png)
 ---
 
 ### DFS
-![DFS](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/solution_dfs.JPG)
+![DFS](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/solution_dfs.JPG)
 ---
 
 ### DFS Tree
-![DFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/dfs.png)
+![DFS Tree](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/dfs.png)
 ---
 
 ### DFS Tree with Legends
-![BFS Tree](https://github.com/sarangbishal/Missionaries-and-Cannibals-Problem/blob/master/assets/dfs_legend.png)
+![BFS Tree](https://github.com/Bishalsarang/Missionaries-and-Cannibals-Problem/blob/master/assets/dfs_legend.png)
 ---
